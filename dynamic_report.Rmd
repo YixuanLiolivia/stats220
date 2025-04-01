@@ -1,0 +1,65 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+library(tidyverse)
+
+```
+
+```{css}
+body {background-color: #333; color: #f9f9f9; font-size: 16px; font-family: "Arial", sans-serif, bold;}
+h2 {color: #lightblue; border-bottom: 2px solid #ccc; padding-bottom: 5px;}
+```
+## Import data
+```{r}
+logged_data <- ("https://docs.google.com/spreadsheets/d/e/2PACX-1vSslnld5QFQj1P3Ch4yb_UQ9FJnWuHFIQWCN55V9FUmcTsdWNCobYL4RMdWbtvSfOWTnyaPNKij6R55/pub?gid=469008883&single=true&output=csv")
+latest_data <- read_csv(logged_data) %>%
+  rename(main_product_category=2, 
+         relevant_rate=4)
+names(latest_data)
+glimpse(latest_data)
+```
+
+## execute data about how many ads did you see during a 5-minute scroll?
+```{r}
+min(latest_data$`How many ads did you see during a 5-minute scroll?`)
+max(latest_data$`How many ads did you see during a 5-minute scroll?`)
+mean(latest_data$`How many ads did you see during a 5-minute scroll?`)
+length(latest_data$Number)
+summary(latest_data)
+```
+
+## draw the two plots
+```{r}
+ggplot(data = latest_data, aes(x = main_product_category, fill = main_product_category)) +
+  geom_bar() + 
+  labs(title = "What was the main product category of the ad?", 
+       x = "Category", 
+       y = "Number of people")
+
+paste("Out of", length(latest_data$main_product_category), "people, the most accepted common ad category was", max(latest_data$main_product_category), ".")
+```
+
+```{r}
+ggplot(data = latest_data, aes(x = relevant_rate, fill = relevant_rate)) + 
+  geom_bar() +
+  labs(title = "Rate how relevant the ad felt to 20 people?",
+       x = "Relevant Rate", 
+       y = "Number of people")
+
+paste("Among the 20 people, the average relevance rating was", round(mean(latest_data$relevant_rate)), "and the most common rating was", names(which.max(table(latest_data$relevant_rate))), ".")
+```
+
+
+```{r}
+pets <- c("cat", "dog", "turtle", "rabbit")
+best_pet <- pets[1]
+
+```
+
+The best pet to have is a `r best_pet` of course!
+
+![](https://c.tenor.com/-qBsG1HwR4oAAAAC/tenor.gif)
